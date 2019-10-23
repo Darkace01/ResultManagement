@@ -11,14 +11,61 @@ using ResultManagement.Models.Core;
 
 namespace ResultManagement.Controllers
 {
+    [Authorize(Roles="Manager")]
     public class ResultsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Results
-        public ActionResult Index()
+        public ActionResult Index(string searchString, string searchBy)
         {
-            return View(db.Result.ToList());
+            var result = from s in db.Result
+                         select s;
+
+            string selectedOption;
+            if (searchBy == "allOptions")
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.StudentId.ToString().ToLower().Contains(searchString.ToLower())
+                                           || s.UnitCode.ToString().Contains(searchString)
+                                           || s.Semester.ToString().ToLower().Contains(searchString.ToLower())
+                                             || s.Year.ToString().ToLower().Contains(searchString.ToLower())
+                                           );
+                }
+            }
+            else if (searchBy =="studentId")
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.StudentId.ToString().ToLower().Contains(searchString.ToLower()));
+                }
+                
+            }
+            else if (searchBy == "unitCode")
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.UnitCode.ToString().ToLower().Contains(searchString.ToLower()));
+                }
+            }
+            else if (searchBy == "semester")
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.Semester.ToString().ToLower().Contains(searchString.ToLower()));
+                }
+            }
+            else if (searchBy == "year")
+            {
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    result = result.Where(s => s.Year.ToString().ToLower().Contains(searchString.ToLower()));
+                }
+            }
+            ViewBag.Search = searchString;
+
+            return View(result.ToList());
         }
 
         // GET: Results/Details/5

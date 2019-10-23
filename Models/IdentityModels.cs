@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -15,8 +16,11 @@ namespace ResultManagement.Models
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
+            
             return userIdentity;
         }
+        [Range(0, 1)]
+        public int TypeId { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

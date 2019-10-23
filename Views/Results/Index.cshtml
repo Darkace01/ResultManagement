@@ -4,7 +4,19 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+    <form>
+        <p>Search by</p>
+        <select name="searchBy">
+            <option value="allOptions">All options</option>
+            <option value="studentId">Student Id</option>
+            <option value="unitCode">unitCode</option>
+            <option value="semester">Semester</option>
+            <option value="year">Year</option>
+        </select>
+        <input type="text" name="searchString" value="@ViewBag.Search"/>
+        <button type="submit" class="btn btn-success">Search</button>
+    </form>
+
 
 <p>
     @Html.ActionLink("Create New", "Create")

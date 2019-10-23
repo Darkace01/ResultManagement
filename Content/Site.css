@@ -22,3 +22,19 @@ select,
 textarea {
     max-width: 280px;
 }
+.pad {
+    padding-top: 20px;
+}
+.cards{
+    height:30vh;
+    width:100%;
+    border-width: 1px;
+    border-style:solid;
+    align-content:center;
+    text-decoration:none;
+    color: black;
+    border-radius: 30px;
+}
+.cards p{
+    padding-top: 80px;
+}

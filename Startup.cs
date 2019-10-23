@@ -37,6 +37,7 @@ namespace ResultManagement
                 var user = new ApplicationUser();
                 user.UserName = "admin@techsavvyng.com";
                 user.Email = "admin@techsavvyng.com";
+                user.TypeId = 0;
 
                 string userPWD = "Admin#1";
 
@@ -65,6 +66,7 @@ namespace ResultManagement
                 var user = new ApplicationUser();
                 user.UserName = "manager@techsavvyng.com";
                 user.Email = "manager@techsavvyng.com";
+                user.TypeId = 1;
 
                 string userPWD = "Manager#1";
 
@@ -73,7 +75,7 @@ namespace ResultManagement
                 //add managerRole to manager  
                 if (chkUser.Succeeded)
                 {
-                    var result1 = UserManager.AddToRole(user.Id, "admin");
+                    var result1 = UserManager.AddToRole(user.Id, "manager");
 
                 }
             }

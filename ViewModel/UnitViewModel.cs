@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace ResultManagement.Models.Core
+namespace ResultManagement.ViewModel
 {
-    public class Unit
+    public class UnitViewModel
     {
         public int Id { get; set; }
         [Display(Name = "Unit Code")]
@@ -21,11 +21,9 @@ namespace ResultManagement.Models.Core
         public string UnitCordinator { get; set; }
 
         public string PdfPath { get; set; }
-        [Display(Name ="OutLine Document")]
+        [Display(Name = "OutLine Document")]
         public string PdfTitle { get; set; }
         [NotMapped]
         public HttpPostedFileBase PdfFile { get; set; }
-
-
     }
 }

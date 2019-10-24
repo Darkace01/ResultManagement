@@ -70,11 +70,7 @@ namespace ResultManagement.Controllers
                     fileName = Path.Combine(Server.MapPath("~/Content/PDFs/"), fileName);
                     unit.PdfFile.SaveAs(fileName); 
                 }
-                else
-                {
-                    unit.PdfTitle = "No Pdf";
-                    unit.PdfPath = "~/Content/PDFs/Introduction To Project Planning Transcript20193624103638091.pdf";
-                }
+                
                 db.Unit.Add(unit);
                 db.SaveChanges();
                 return RedirectToAction("Index");

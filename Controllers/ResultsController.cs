@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using ResultManagement.Helpers;
 using ResultManagement.Models;
 using ResultManagement.Models.Core;
+using ResultManagement.ViewModel;
 
 namespace ResultManagement.Controllers
 {
@@ -17,53 +20,44 @@ namespace ResultManagement.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Results
-        public ActionResult Index(string searchString, string searchBy)
+        public ActionResult Index(string searchString, string semesterSearch, string unitCodeSearch)
         {
-            var result = from s in db.Result
-                         select s;
+            var result = (from s in db.Result
+                          select s);
 
-            string selectedOption;
-            if (searchBy == "allOptions")
+            List<string> semesters = new List<string>(){
+            "None","1","2"
+        };
+
+            List<string> unitCodes = new List<string>(){
+            
+        };
+
+            unitCodes = (from s in db.Unit
+                            select s.UnitCode.ToString()).ToList();
+
+
+            if (!String.IsNullOrEmpty(searchString))
             {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    result = result.Where(s => s.StudentId.ToString().ToLower().Contains(searchString.ToLower())
-                                           || s.UnitCode.ToString().Contains(searchString)
-                                           || s.Semester.ToString().ToLower().Contains(searchString.ToLower())
-                                             || s.Year.ToString().ToLower().Contains(searchString.ToLower())
-                                           );
-                }
+                result = result.Where(s => s.StudentId.ToString().ToLower().Contains(searchString.ToLower())
+                                       || s.UnitCode.ToString().Contains(searchString)
+                                       || s.Semester.ToString().ToLower().Contains(searchString.ToLower())
+                                         || s.Year.ToString().ToLower().Contains(searchString.ToLower())
+                                       );
             }
-            else if (searchBy =="studentId")
+            if (semesterSearch != "None")
             {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    result = result.Where(s => s.StudentId.ToString().ToLower().Contains(searchString.ToLower()));
-                }
-                
+                result = result.Where(s => s.Semester.ToString() == semesterSearch);
             }
-            else if (searchBy == "unitCode")
+            if (unitCodeSearch != "None" || !(string.IsNullOrEmpty(unitCodeSearch)))
             {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    result = result.Where(s => s.UnitCode.ToString().ToLower().Contains(searchString.ToLower()));
-                }
+                result = result.Where(s => s.UnitCode.ToString() == unitCodeSearch);
             }
-            else if (searchBy == "semester")
-            {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    result = result.Where(s => s.Semester.ToString().ToLower().Contains(searchString.ToLower()));
-                }
-            }
-            else if (searchBy == "year")
-            {
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    result = result.Where(s => s.Year.ToString().ToLower().Contains(searchString.ToLower()));
-                }
-            }
+
+
             ViewBag.Search = searchString;
+            ViewBag.SemesterSearch = semesters;
+            ViewBag.UnitCodesSearch = unitCodes;
 
             return View(result.ToList());
         }
@@ -86,6 +80,17 @@ namespace ResultManagement.Controllers
         // GET: Results/Create
         public ActionResult Create()
         {
+            ViewBag.UnitCodes = from s in db.Result
+                                select s.UnitCode;
+
+            List<string> studentId = new List<string>()
+       {
+            "150408011","150408013","140805003","130492020",
+            "150308011","150508014","140805004","130492075",
+            "150408011","150408013","140805012","130492030",
+        };
+
+            ViewBag.StudentIds = studentId;
             return View();
         }
 
@@ -94,10 +99,24 @@ namespace ResultManagement.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,UnitCode,StudentId,Semester,Year,AssessmentScore1,AssessmentScore2,ExamScore")] Result result)
+        public ActionResult Create([Bind(Include = "Id,UnitCode,StudentId,Semester,Year,AssessmentScore1,AssessmentScore2,ExamScore,ImgFile")] Result result)
         {
             if (ModelState.IsValid)
             {
+                if (result.ImgFile != null)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(result.ImgFile.FileName);
+                    string extension = Path.GetExtension(result.ImgFile.FileName);
+                    if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                    {
+                        ViewBag.ImgError = "File is not an image";
+                        return View(result);
+                    }
+                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                    result.ImgPath = "~/Content/IMAGES/" + fileName;
+                    fileName = Path.Combine(Server.MapPath("~/Content/IMAGES/"), fileName);
+                    result.ImgFile.SaveAs(fileName);
+                }
                 db.Result.Add(result);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -118,7 +137,20 @@ namespace ResultManagement.Controllers
             {
                 return HttpNotFound();
             }
-            return View(result);
+
+            ResultViewModel viewModel = new ResultViewModel
+            {
+                Id = result.Id,
+                UnitCode = result.UnitCode,
+                StudentId = result.StudentId,
+                Year = result.Year,
+                Semester = result.Semester,
+                AssessmentScore1 =result.AssessmentScore1,
+                AssessmentScore2 =result.AssessmentScore2,
+                ExamScore = result.ExamScore,
+                ImgPath=result.ImgPath,
+            };
+            return View(viewModel);
         }
 
         // POST: Results/Edit/5
@@ -126,10 +158,40 @@ namespace ResultManagement.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,UnitCode,StudentId,Semester,Year,AssessmentScore1,AssessmentScore2,ExamScore")] Result result)
+        public ActionResult Edit([Bind(Include = "Id,UnitCode,StudentId,Semester,Year,AssessmentScore1,AssessmentScore2,ExamScore,ImgFile")] ResultViewModel resultModel)
         {
+            Result result = db.Result.Find(resultModel.Id);
             if (ModelState.IsValid)
             {
+                if (resultModel.ImgFile != null)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(resultModel.ImgFile.FileName);
+                    string extension = Path.GetExtension(resultModel.ImgFile.FileName);
+                    if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                    {
+                        ViewBag.ImgError = "File is not an image";
+                        return View(resultModel);
+                    }
+                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                    resultModel.ImgPath = "~/Content/IMAGEs/" + fileName;
+                    fileName = Path.Combine(Server.MapPath("~/Content/IMAGEs/"), fileName);
+                    resultModel.ImgFile.SaveAs(fileName);
+
+                    result.ImgPath = resultModel.ImgPath;
+                    result.ImgFile = resultModel.ImgFile;
+                }
+
+                result.UnitCode = resultModel.UnitCode;
+                result.StudentId = resultModel.StudentId;
+                result.Semester = resultModel.Semester;
+                result.Year = resultModel.Year;
+                result.AssessmentScore1 = resultModel.AssessmentScore1;
+                result.AssessmentScore2 = resultModel.AssessmentScore2;
+                result.ExamScore = resultModel.ExamScore;
+
+
+
+
                 db.Entry(result).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -145,6 +207,7 @@ namespace ResultManagement.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Result result = db.Result.Find(id);
+
             if (result == null)
             {
                 return HttpNotFound();
@@ -157,9 +220,27 @@ namespace ResultManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Result result = db.Result.Find(id);
-            db.Result.Remove(result);
-            db.SaveChanges();
+            try
+            {
+                
+                Result result = db.Result.Find(id);
+
+                db.Result.Remove(result);
+                db.SaveChanges();
+                string path = Request.MapPath(result.ImgPath);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+                else
+                {
+                    int a = 0;
+                }
+                
+            }catch(Exception ex)
+            {
+
+            }
             return RedirectToAction("Index");
         }
 

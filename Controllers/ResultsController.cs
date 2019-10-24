@@ -45,11 +45,11 @@ namespace ResultManagement.Controllers
                                          || s.Year.ToString().ToLower().Contains(searchString.ToLower())
                                        );
             }
-            if (semesterSearch != "None")
+            if (!(semesterSearch == "None" || string.IsNullOrEmpty(semesterSearch)))
             {
                 result = result.Where(s => s.Semester.ToString() == semesterSearch);
             }
-            if (unitCodeSearch != "None" || !(string.IsNullOrEmpty(unitCodeSearch)))
+            if (!(unitCodeSearch == "None" || (string.IsNullOrEmpty(unitCodeSearch))))
             {
                 result = result.Where(s => s.UnitCode.ToString() == unitCodeSearch);
             }
@@ -80,8 +80,8 @@ namespace ResultManagement.Controllers
         // GET: Results/Create
         public ActionResult Create()
         {
-            ViewBag.UnitCodes = from s in db.Result
-                                select s.UnitCode;
+            ViewBag.UnitCodes = (from s in db.Unit
+                                select s.UnitCode).ToList();
 
             List<string> studentId = new List<string>()
        {

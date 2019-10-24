@@ -10,8 +10,10 @@ namespace ResultManagement.Models.Core
     public class Unit
     {
         public int Id { get; set; }
+
         [Display(Name = "Unit Code")]
         [Required]
+        [RegularExpression("^[a-zA-Z][a-zA-Z0-9 ]*$", ErrorMessage = "It is not a valid code")]
         public string UnitCode { get; set; }
         [Display(Name = "Unit Title")]
         [Required]

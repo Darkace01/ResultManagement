@@ -11,8 +11,11 @@ namespace ResultManagement.Models.Core
     public class Result
     {
         public int Id { get; set; }
+
         [Display(Name = "Unit Code")]
-        public int UnitCode { get; set; }
+        [Required]
+        [RegularExpression("^[a-zA-Z][a-zA-Z0-9 ]*$", ErrorMessage = "It is not a valid code")]
+        public string UnitCode { get; set; }
         public int StudentId { get; set; }
         //public s MyProperty { get; set; }
         [Range(1,2)]

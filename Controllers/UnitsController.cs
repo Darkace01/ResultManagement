@@ -54,25 +54,33 @@ namespace ResultManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (unit.PdfFile!=null)
+                try
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(unit.PdfFile.FileName);
-                    unit.PdfTitle = fileName;
-                    string extension = Path.GetExtension(unit.PdfFile.FileName);
-                    if(extension.ToLower() != ".pdf")
+                    if (unit.PdfFile != null)
                     {
-                        ViewBag.PdfError = "File is not a pdf";
-                        return View(unit);
-                        
+                        string fileName = Path.GetFileNameWithoutExtension(unit.PdfFile.FileName);
+                        unit.PdfTitle = fileName;
+                        string extension = Path.GetExtension(unit.PdfFile.FileName);
+                        if (extension.ToLower() != ".pdf")
+                        {
+                            ViewBag.PdfError = "File is not a pdf";
+                            return View(unit);
+
+                        }
+                        fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                        unit.PdfPath = "~/Content/PDFs/" + fileName;
+                        fileName = Path.Combine(Server.MapPath("~/Content/PDFs/"), fileName);
+                        unit.PdfFile.SaveAs(fileName);
                     }
-                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
-                    unit.PdfPath = "~/Content/PDFs/" + fileName;
-                    fileName = Path.Combine(Server.MapPath("~/Content/PDFs/"), fileName);
-                    unit.PdfFile.SaveAs(fileName); 
+
+                    db.Unit.Add(unit);
+                    db.SaveChanges();
                 }
-                
-                db.Unit.Add(unit);
-                db.SaveChanges();
+                catch (Exception)
+                {
+
+                    throw;
+                }
                 return RedirectToAction("Index");
             }
 
@@ -114,38 +122,46 @@ namespace ResultManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                Unit unit = db.Unit.Find(unitModel.Id);
-                if (unitModel.PdfFile != null)
+                try
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(unitModel.PdfFile.FileName);
-                    unitModel.PdfTitle = fileName;
-                    string extension = Path.GetExtension(unitModel.PdfFile.FileName);
-                    if (extension.ToLower() != ".pdf")
+                    Unit unit = db.Unit.Find(unitModel.Id);
+                    if (unitModel.PdfFile != null)
                     {
-                        ViewBag.PdfError = "File is not a pdf";
-                        return View(unitModel);
+                        string fileName = Path.GetFileNameWithoutExtension(unitModel.PdfFile.FileName);
+                        unitModel.PdfTitle = fileName;
+                        string extension = Path.GetExtension(unitModel.PdfFile.FileName);
+                        if (extension.ToLower() != ".pdf")
+                        {
+                            ViewBag.PdfError = "File is not a pdf";
+                            return View(unitModel);
 
+                        }
+                        fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                        unitModel.PdfPath = "~/Content/PDFs/" + fileName;
+                        fileName = Path.Combine(Server.MapPath("~/Content/PDFs/"), fileName);
+                        unitModel.PdfFile.SaveAs(fileName);
+
+                        unit.PdfFile = unitModel.PdfFile;
+                        unit.PdfTitle = unitModel.PdfTitle;
+                        unit.PdfPath = unitModel.PdfPath;
                     }
-                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
-                    unitModel.PdfPath = "~/Content/PDFs/" + fileName;
-                    fileName = Path.Combine(Server.MapPath("~/Content/PDFs/"), fileName);
-                    unitModel.PdfFile.SaveAs(fileName);
 
-                    unit.PdfFile = unitModel.PdfFile;
-                    unit.PdfTitle = unitModel.PdfTitle;
-                    unit.PdfPath = unitModel.PdfPath;
+
+                    unit.UnitCode = unitModel.UnitCode;
+                    unit.UnitTitle = unitModel.UnitTitle;
+                    unit.UnitCordinator = unitModel.UnitCordinator;
+
+
+
+
+                    db.Entry(unit).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
+                catch (Exception)
+                {
 
-
-                unit.UnitCode = unitModel.UnitCode;
-                unit.UnitTitle = unitModel.UnitTitle;
-                unit.UnitCordinator = unitModel.UnitCordinator;
-
-
-
-
-                db.Entry(unit).State = EntityState.Modified;
-                db.SaveChanges();
+                    throw;
+                }
                 return RedirectToAction("Index");
             }
             return View(unitModel);
@@ -171,9 +187,23 @@ namespace ResultManagement.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Unit unit = db.Unit.Find(id);
-            db.Unit.Remove(unit);
-            db.SaveChanges();
+            try
+            {
+                Unit unit = db.Unit.Find(id);
+                db.Unit.Remove(unit);
+                db.SaveChanges();
+                string path = Request.MapPath(unit.PdfPath);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             return RedirectToAction("Index");
         }
 

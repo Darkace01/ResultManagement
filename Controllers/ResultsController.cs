@@ -135,27 +135,35 @@ namespace ResultManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (result.ImgFile != null)
+                try
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(result.ImgFile.FileName);
-                    string extension = Path.GetExtension(result.ImgFile.FileName);
-                    if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                    if (result.ImgFile != null)
                     {
-                        ViewBag.ImgError = "File is not an image";
-                        return View(result);
+                        string fileName = Path.GetFileNameWithoutExtension(result.ImgFile.FileName);
+                        string extension = Path.GetExtension(result.ImgFile.FileName);
+                        if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                        {
+                            ViewBag.ImgError = "File is not an image";
+                            return View(result);
+                        }
+                        fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                        result.ImgPath = "~/Content/IMAGES/" + fileName;
+                        fileName = Path.Combine(Server.MapPath("~/Content/IMAGES/"), fileName);
+                        result.ImgFile.SaveAs(fileName);
                     }
-                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
-                    result.ImgPath = "~/Content/IMAGES/" + fileName;
-                    fileName = Path.Combine(Server.MapPath("~/Content/IMAGES/"), fileName);
-                    result.ImgFile.SaveAs(fileName);
+
+                    result.UnitId = db.Unit.Where(r => r.UnitCode == result.UnitCode).FirstOrDefault().Id;
+                    result.Unit = db.Unit.Where(r => r.UnitCode == result.UnitCode).FirstOrDefault();
+
+                    db.Result.Add(result);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
                 }
+                catch (Exception)
+                {
 
-                result.UnitId = db.Unit.Where(r => r.UnitCode == result.UnitCode).FirstOrDefault().Id;
-                result.Unit = db.Unit.Where(r=>r.UnitCode==result.UnitCode).FirstOrDefault();
-
-                db.Result.Add(result);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    throw;
+                }
             }
 
             return View(result);
@@ -209,40 +217,48 @@ namespace ResultManagement.Controllers
             Result result = db.Result.Find(resultModel.Id);
             if (ModelState.IsValid)
             {
-                if (resultModel.ImgFile != null)
+                try
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(resultModel.ImgFile.FileName);
-                    string extension = Path.GetExtension(resultModel.ImgFile.FileName);
-                    if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                    if (resultModel.ImgFile != null)
                     {
-                        ViewBag.ImgError = "File is not an image";
-                        return View(resultModel);
+                        string fileName = Path.GetFileNameWithoutExtension(resultModel.ImgFile.FileName);
+                        string extension = Path.GetExtension(resultModel.ImgFile.FileName);
+                        if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
+                        {
+                            ViewBag.ImgError = "File is not an image";
+                            return View(resultModel);
+                        }
+                        fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
+                        resultModel.ImgPath = "~/Content/IMAGEs/" + fileName;
+                        fileName = Path.Combine(Server.MapPath("~/Content/IMAGEs/"), fileName);
+                        resultModel.ImgFile.SaveAs(fileName);
+
+                        result.ImgPath = resultModel.ImgPath;
+                        result.ImgFile = resultModel.ImgFile;
                     }
-                    fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
-                    resultModel.ImgPath = "~/Content/IMAGEs/" + fileName;
-                    fileName = Path.Combine(Server.MapPath("~/Content/IMAGEs/"), fileName);
-                    resultModel.ImgFile.SaveAs(fileName);
 
-                    result.ImgPath = resultModel.ImgPath;
-                    result.ImgFile = resultModel.ImgFile;
+                    result.UnitId = db.Unit.Find(result.UnitCode).Id;
+                    result.Unit = db.Unit.Find(result.UnitCode);
+                    result.UnitCode = resultModel.UnitCode;
+                    result.StudentId = resultModel.StudentId;
+                    result.Semester = resultModel.Semester;
+                    result.Year = resultModel.Year;
+                    result.AssessmentScore1 = resultModel.AssessmentScore1;
+                    result.AssessmentScore2 = resultModel.AssessmentScore2;
+                    result.ExamScore = resultModel.ExamScore;
+
+
+
+
+                    db.Entry(result).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
                 }
+                catch (Exception)
+                {
 
-                result.UnitId = db.Unit.Find(result.UnitCode).Id;
-                result.Unit = db.Unit.Find(result.UnitCode);
-                result.UnitCode = resultModel.UnitCode;
-                result.StudentId = resultModel.StudentId;
-                result.Semester = resultModel.Semester;
-                result.Year = resultModel.Year;
-                result.AssessmentScore1 = resultModel.AssessmentScore1;
-                result.AssessmentScore2 = resultModel.AssessmentScore2;
-                result.ExamScore = resultModel.ExamScore;
-
-
-
-
-                db.Entry(result).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    throw;
+                }
             }
             return View(result);
         }
@@ -279,10 +295,6 @@ namespace ResultManagement.Controllers
                 if (System.IO.File.Exists(path))
                 {
                     System.IO.File.Delete(path);
-                }
-                else
-                {
-                    int a = 0;
                 }
                 
             }catch(Exception ex)

@@ -33,14 +33,14 @@ namespace ResultManagement.Controllers
         public ActionResult Index(string searchString, string semesterSearch, string unitCodeSearch)
         {
             var result = (from s in db.Result
-                          select s);
+                          select s).Include(s=>s.Unit);
 
             List<string> semesters = new List<string>(){
             "None","1","2"
         };
 
             List<string> unitCodes = new List<string>(){
-            "None","2"
+            "None"
         };
 
             List<string> _unitCodes = (from s in db.Unit
@@ -79,6 +79,18 @@ namespace ResultManagement.Controllers
             unitCodes.Remove(unitCodeSearch);
             ViewBag.UnitCodesSearch = unitCodes;
 
+            ViewBag.CountResult = result.ToList().Count();
+
+            double total = 0;
+            foreach(var item in result.ToList())
+            {
+                double assignment1 = item.AssessmentScore1;
+                double assignment2 = item.AssessmentScore2;
+                double exam = item.ExamScore;
+                total += (assignment1 + assignment2 + exam);
+            }
+
+            ViewBag.Average = result.ToList().Count <= 0 ? 0 : (total) / result.ToList().Count();
             return View(result.ToList());
         }
 
@@ -137,6 +149,10 @@ namespace ResultManagement.Controllers
                     fileName = Path.Combine(Server.MapPath("~/Content/IMAGES/"), fileName);
                     result.ImgFile.SaveAs(fileName);
                 }
+
+                result.UnitId = db.Unit.Where(r => r.UnitCode == result.UnitCode).FirstOrDefault().Id;
+                result.Unit = db.Unit.Where(r=>r.UnitCode==result.UnitCode).FirstOrDefault();
+
                 db.Result.Add(result);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -211,6 +227,8 @@ namespace ResultManagement.Controllers
                     result.ImgFile = resultModel.ImgFile;
                 }
 
+                result.UnitId = db.Unit.Find(result.UnitCode).Id;
+                result.Unit = db.Unit.Find(result.UnitCode);
                 result.UnitCode = resultModel.UnitCode;
                 result.StudentId = resultModel.StudentId;
                 result.Semester = resultModel.Semester;
@@ -273,6 +291,29 @@ namespace ResultManagement.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        public ActionResult StudentResults(int studentId = 0)
+        {
+            var result = (from s in db.Result
+                          select s).Include(s => s.Unit).Where(s=>s.StudentId==studentId);
+
+            ViewBag.StudentId = studentId;
+
+            ViewBag.CountResult = result.ToList().Count();
+
+            double total = 0;
+            foreach (var item in result.ToList())
+            {
+                double assignment1 = item.AssessmentScore1;
+                double assignment2 = item.AssessmentScore2;
+                double exam = item.ExamScore;
+                total += (assignment1 + assignment2 + exam);
+            }
+
+            ViewBag.Average = result.ToList().Count <= 0 ? 0 : (total) / result.ToList().Count();
+            return View(result.ToList());
+        }
+
 
         protected override void Dispose(bool disposing)
         {

@@ -11,6 +11,8 @@ namespace ResultManagement.Models.Core
     public class Result
     {
         public int Id { get; set; }
+        public int UnitId { get; set; }
+        public Unit Unit { get; set; }
 
         [Display(Name = "Unit Code")]
         [Required]

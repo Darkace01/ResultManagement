@@ -1,0 +1,140 @@
+﻿@model IEnumerable<ResultManagement.Models.Core.Result>
+
+@{
+    ViewBag.Title = "StudentResults";
+}
+
+<h2>Student Results</h2>
+<p>Student ID: @ViewBag.StudentId</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Semester)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AssessmentScore1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AssessmentScore2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExamScore)
+        </th>
+        <th>
+            @Html.DisplayName("Unit Score")
+        </th>
+        <th>
+            @Html.DisplayName("Grade")
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssessmentScore1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssessmentScore2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExamScore)
+            </td>
+            @{
+                double val1 = item.AssessmentScore1 + item.AssessmentScore2 + item.ExamScore;
+                <td>
+                    @Html.Label(val1.ToString())
+                </td>
+                string grade = "";
+                if (val1 >= 80)
+                {
+                    grade = "HD";
+                }
+                else if (val1 >= 70)
+                {
+                    grade = "A";
+                }
+                else if (val1 >= 60)
+                {
+                    grade = "B";
+                }
+                else if (val1 >= 50)
+                {
+                    grade = "C";
+                }
+                else if (val1 >= 45)
+                {
+                    grade = "D";
+                }
+                else if (val1 >= 40)
+                {
+                    grade = "E";
+                }
+                else
+                {
+                    grade = "F";
+                }
+                <td>
+                    @Html.Label(grade)
+                </td>
+            }
+        </tr>
+    }
+
+</table>
+
+
+
+<p>Results: @ViewBag.CountResult</p>
+@{
+    double average = (double)ViewBag.Average;
+    string averageGrade = "";
+    if (average >= 80)
+    {
+        averageGrade = "HD";
+    }
+    else if (average >= 70)
+    {
+        averageGrade = "A";
+    }
+    else if (average >= 60)
+    {
+        averageGrade = "B";
+    }
+    else if (average >= 50)
+    {
+        averageGrade = "C";
+    }
+    else if (average >= 45)
+    {
+        averageGrade = "D";
+    }
+    else if (average >= 40)
+    {
+        averageGrade = "E";
+    }
+    else
+    {
+        averageGrade = "F";
+    }
+
+
+    <p>Average: @ViewBag.Average @averageGrade</p>
+}

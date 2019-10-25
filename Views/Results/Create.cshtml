@@ -83,7 +83,7 @@
         <div class="col-md-10">
             <p id="ImgError" class="" style="color:red;">@ViewBag.ImgError</p>
             <p id="imgFileSizeError" style="color:red;"></p>
-            <input type="file" id="imgFile" name="ImgFile" value="Choose Image" required />
+            <input type="file" id="imgFile" name="ImgFile" accept="image/*" value="Choose Image" required />
             @*@Html.ValidationMessageFor(model => model.PdfFile, "", new { @class = "text-danger" })*@
         </div>
     </div>

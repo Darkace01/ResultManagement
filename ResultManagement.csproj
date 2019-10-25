@@ -177,17 +177,9 @@
     </Compile>
     <Compile Include="Helpers\DummyStudents.cs" />
     <Compile Include="Helpers\Enums.cs" />
-    <Compile Include="Migrations\201910242110115_InitialCreate.cs" />
-    <Compile Include="Migrations\201910242110115_InitialCreate.Designer.cs">
-      <DependentUpon>201910242110115_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201910242135240_init.cs" />
-    <Compile Include="Migrations\201910242135240_init.Designer.cs">
-      <DependentUpon>201910242135240_init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201910242150369_migration1.cs" />
-    <Compile Include="Migrations\201910242150369_migration1.Designer.cs">
-      <DependentUpon>201910242150369_migration1.cs</DependentUpon>
+    <Compile Include="Migrations\201910251009556_init.cs" />
+    <Compile Include="Migrations\201910251009556_init.Designer.cs">
+      <DependentUpon>201910251009556_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -205,8 +197,10 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\datatables.min.css" />
     <Content Include="Content\IMAGES\dummyProfilePic.jpg" />
     <Content Include="Content\IMAGES\WIN_20191011_15_48_17_Pro20194124034138526.jpg" />
+    <Content Include="Content\js\datatables.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -268,6 +262,7 @@
     <Content Include="Views\Units\Details.cshtml" />
     <Content Include="Views\Units\Edit.cshtml" />
     <Content Include="Views\Units\Index.cshtml" />
+    <Content Include="Views\Results\StudentResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -287,14 +282,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201910242110115_InitialCreate.resx">
-      <DependentUpon>201910242110115_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201910242135240_init.resx">
-      <DependentUpon>201910242135240_init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201910242150369_migration1.resx">
-      <DependentUpon>201910242150369_migration1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201910251009556_init.resx">
+      <DependentUpon>201910251009556_init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

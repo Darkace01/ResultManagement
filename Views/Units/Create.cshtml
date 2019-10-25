@@ -44,7 +44,7 @@
         <div class="col-md-10">
             <p id="PdfError" class="" style="color:red;">@ViewBag.PdfError</p>
            <p id="pdfFileSizeError" style="color:red;"></p>
-            <input type="file" id="pdfFile" name="PdfFile" value="Change PDF" required/>
+            <input type="file" id="pdfFile" name="PdfFile" value="Change PDF" accept=".pdf" required/>
            @*@Html.ValidationMessageFor(model => model.PdfFile, "", new { @class = "text-danger" })*@
         </div>
     </div>

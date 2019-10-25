@@ -46,13 +46,13 @@
             <p id="PdfError" class="" style="color:red;">@ViewBag.PdfError</p>
             <p>@Html.DisplayFor(model => model.PdfTitle)</p>
             <p id="pdfFileSizeError" style="color:red;"></p>
-            <input type="file" id="pdfFile" name="PdfFile" value="Change PDF" />
+            <input type="file" id="pdfFile" name="PdfFile" value="Change PDF" accept=".pdf"/>
             @Html.ValidationMessageFor(model => model.PdfFile, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" id="submitButton" class="btn btn-default" />
+            <input type="submit" value="Save" id="submitButton" class="btn btn-default"  />
         </div>
     </div>
 </div>

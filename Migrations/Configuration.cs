@@ -10,7 +10,6 @@ namespace ResultManagement.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "ResultManagement.Models.ApplicationDbContext";
         }
 
         protected override void Seed(ResultManagement.Models.ApplicationDbContext context)

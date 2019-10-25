@@ -13,7 +13,7 @@ namespace ResultManagement.Models.Core
 
         [Display(Name = "Unit Code")]
         [Required]
-        [RegularExpression("^[a-zA-Z][a-zA-Z0-9 ]*$", ErrorMessage = "It is not a valid code")]
+        [RegularExpression("^[a-zA-Z]{3,3}[0-9]{4,4}", ErrorMessage = "It is not a valid code")]
         public string UnitCode { get; set; }
         [Display(Name = "Unit Title")]
         [Required]

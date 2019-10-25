@@ -16,13 +16,13 @@ namespace ResultManagement.Models.Core
 
         [Display(Name = "Unit Code")]
         [Required]
-        [RegularExpression("^[a-zA-Z][a-zA-Z0-9 ]*$", ErrorMessage = "It is not a valid code")]
+        [RegularExpression("^[a-zA-Z]{3,3}[0-9]{4,4}", ErrorMessage = "It is not a valid code")]
         public string UnitCode { get; set; }
         public int StudentId { get; set; }
         //public s MyProperty { get; set; }
         [Range(1,2)]
         public int Semester { get; set; }
-        [Range(1000,9999)]
+        [RegularExpression("^[1-2][0-9]{3,3}",ErrorMessage ="It is not a valid year")]
         public int Year { get; set; }
         [Range(0, 20)]
         [Display(Name = "Assessment Score 1")]

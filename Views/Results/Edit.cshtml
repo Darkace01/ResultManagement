@@ -20,7 +20,16 @@
     <div class="form-group">
         @Html.LabelFor(model => model.UnitCode, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.UnitCode, new { htmlAttributes = new { @class = "form-control" } })
+            @*@Html.EditorFor(model => model.UnitCode, new { htmlAttributes = new { @class = "form-control" } })*@
+            @*@Html.DropDownListFor(model => model.UnitCode, new SelectList(ViewBag.UnitCodes), (string)@ViewBag.SelectedUnitCode
+           , htmlAttributes: new { @class = "form-control opt" })*@
+            <select class="form-control" name="UnitCode">
+                <option value="@ViewBag.SelectedUnitCode">@ViewBag.SelectedUnitCode</option>
+                @foreach (var item in ViewBag.UnitCodes)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
             @Html.ValidationMessageFor(model => model.UnitCode, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -28,7 +37,16 @@
     <div class="form-group">
         @Html.LabelFor(model => model.StudentId, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.StudentId, new { htmlAttributes = new { @class = "form-control" } })
+            @*@Html.EditorFor(model => model.StudentId, new { htmlAttributes = new { @class = "form-control" } })*@
+            @*@Html.DropDownListFor(model => model.StudentId, new SelectList(ViewBag.StudentIds), (string)ViewBag.SelectedStudent
+           , htmlAttributes: new { @class = "form-control opt" })*@
+            <select class="form-control" name="StudentId">
+                <option value="@ViewBag.SelectedStudent">@ViewBag.SelectedStudent</option>
+                @foreach (var item in ViewBag.StudentIds)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
             @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
         </div>
     </div>

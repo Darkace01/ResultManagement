@@ -3,29 +3,45 @@
 @{
     ViewBag.Title = "Index";
 }
+<h1 class="page-header text-center">Result Managers</h1>
+<form>
 
-    <form>
-        <p>Search by</p>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-6">
-                    @Html.DropDownList("semesterSearch", new SelectList(ViewBag.SemesterSearch)
-           , htmlAttributes: new { @class = "form-control opt" })
-                </div>
-                <div class="col-md-6">
-                    @Html.DropDownList("unitCodeSearch", new SelectList(ViewBag.UnitCodesSearch)
-           , "None", htmlAttributes: new { @class = "form-control opt" })
-                </div>
-                <div class="col-md-6"><input type="text" name="searchString" class="form-control" value="@ViewBag.Search" /></div>
-                <button type="submit" class="btn btn-success form-control" style="margin:10px">Search</button>
+    <div class="row">
+        <div class="col-md-2"><p class="text-capitalize" style="font-size:2rem; letter-spacing:2pt;">Search by:</p></div>
+        <div class="col-md-10">
+            @*<div class="col-md-6">
+                         @Html.DropDownList("semesterSearch", new SelectList(ViewBag.SemesterSearch), (string)ViewBag.SelectedSemester
+                , htmlAttributes: new { @class = "form-control opt" })
+                     </div>*@
+
+            <div class="col-md-3">
+                <select name="semesterSearch" class="form-control">
+                    <option value="@ViewBag.SelectedSemester">@ViewBag.SelectedSemester</option>
+                    @foreach (var item in ViewBag.SemesterSearch)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
             </div>
+            <div class="col-md-3">
+                <select name="unitCodeSearch" class="form-control">
+                    <option value="@ViewBag.SelectedUnitCode">@ViewBag.SelectedUnitCode</option>
+                    @foreach (var item in ViewBag.UnitCodesSearch)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3"><input type="text" name="searchString" class="form-control" value="@ViewBag.Search" /></div>
+            <div class="col-md-3"><button type="submit" class="btn btn-info form-control" style="margin:">Search</button></div>
         </div>
-        
-    </form>
+    </div>
+
+</form>
 
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create",null, htmlAttributes:new { @class="btn btn-success"})
 </p>
 <table class="table">
     <tr>
@@ -42,55 +58,101 @@
             @Html.DisplayNameFor(model => model.Year)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AssessmentScore1)
+            @*@Html.DisplayNameFor(model => model.AssessmentScore1)*@
+            @Html.DisplayName("Assign 1")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.AssessmentScore2)
+            @*@Html.DisplayNameFor(model => model.AssessmentScore2)*@
+            @Html.DisplayName("Assign 2")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ExamScore)
+            @*@Html.DisplayNameFor(model => model.ExamScore)*@
+            @Html.DisplayName("Exam")
         </th>
         <th>
-            @Html.DisplayName("Total")
+            @Html.DisplayName("Unit Score")
+        </th>
+        <th>
+            @Html.DisplayName("Grade")
+        </th>
+        <th>
+            @Html.DisplayName("Student Photo")
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.UnitCode)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.StudentId)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Semester)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Year)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.AssessmentScore1)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.AssessmentScore2)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.ExamScore)
-    </td>
-    @{
-        double val1 = item.AssessmentScore1 + item.AssessmentScore2 + item.ExamScore;
-        <td>
-            @Html.Label(val1.ToString())
-        </td>       
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StudentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssessmentScore1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssessmentScore2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExamScore)
+            </td>
+            @{
+                double val1 = item.AssessmentScore1 + item.AssessmentScore2 + item.ExamScore;
+                <td>
+                    @Html.Label(val1.ToString())
+                </td>
+                string grade = "";
+                if (val1 >= 80)
+                {
+                    grade = "HD";
+                }
+                else if (val1 >= 70)
+                {
+                    grade = "A";
+                }
+                else if (val1 >= 60)
+                {
+                    grade = "B";
+                }
+                else if (val1 >= 50)
+                {
+                    grade = "C";
+                }
+                else if (val1 >= 45)
+                {
+                    grade = "D";
+                }
+                else if (val1 >= 40)
+                {
+                    grade = "E";
+                }
+                else
+                {
+                    grade = "F";
+                }
+                <td>
+                    @Html.Label(grade)
+                </td>
+            }
+            <td>
+                <img src="@Url.Content(item.ImgPath)"  style="height:40px;width:80px;" />
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id },htmlAttributes:new { @class="btn btn-primary"}) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id },htmlAttributes:new { @class="btn btn-warning"}) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id },htmlAttributes:new { @class="btn btn-danger"})
+            </td>
+        </tr>
     }
-    <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-    </td>
-</tr>
-}
 
 </table>
+                                                                                                            

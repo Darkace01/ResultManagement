@@ -17,6 +17,16 @@ namespace ResultManagement.Controllers
     [Authorize(Roles="Manager")]
     public class ResultsController : Controller
     {
+        private static List<string> studentIds = new List<string>()
+        {
+            "150408011","150408013","140805003","130492020",
+            "150308011","150508014","140805004","130492075",
+            "150408011","150408013","140805012","130492030",
+            };
+        public ResultsController()
+        {
+            
+        }
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Results
@@ -30,12 +40,16 @@ namespace ResultManagement.Controllers
         };
 
             List<string> unitCodes = new List<string>(){
-            
+            "None","2"
         };
 
-            unitCodes = (from s in db.Unit
-                            select s.UnitCode.ToString()).ToList();
+            List<string> _unitCodes = (from s in db.Unit
+                                       select s.UnitCode.ToString()).ToList();
 
+            foreach(var item in _unitCodes)
+            {
+                unitCodes.Add(item);
+            }
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -56,7 +70,13 @@ namespace ResultManagement.Controllers
 
 
             ViewBag.Search = searchString;
+
+            ViewBag.SelectedSemester = semesterSearch;
+            semesters.Remove(semesterSearch);
             ViewBag.SemesterSearch = semesters;
+
+            ViewBag.SelectedUnitCode = unitCodeSearch;
+            unitCodes.Remove(unitCodeSearch);
             ViewBag.UnitCodesSearch = unitCodes;
 
             return View(result.ToList());
@@ -83,14 +103,14 @@ namespace ResultManagement.Controllers
             ViewBag.UnitCodes = (from s in db.Unit
                                 select s.UnitCode).ToList();
 
-            List<string> studentId = new List<string>()
-       {
-            "150408011","150408013","140805003","130492020",
-            "150308011","150508014","140805004","130492075",
-            "150408011","150408013","140805012","130492030",
-        };
+       //     List<string> studentId = new List<string>()
+       //{
+       //     "150408011","150408013","140805003","130492020",
+       //     "150308011","150508014","140805004","130492075",
+       //     "150408011","150408013","140805012","130492030",
+       // };
 
-            ViewBag.StudentIds = studentId;
+            ViewBag.StudentIds = studentIds;
             return View();
         }
 
@@ -142,7 +162,7 @@ namespace ResultManagement.Controllers
             {
                 Id = result.Id,
                 UnitCode = result.UnitCode,
-                StudentId = result.StudentId,
+                //StudentId = result.StudentId,
                 Year = result.Year,
                 Semester = result.Semester,
                 AssessmentScore1 =result.AssessmentScore1,
@@ -150,6 +170,16 @@ namespace ResultManagement.Controllers
                 ExamScore = result.ExamScore,
                 ImgPath=result.ImgPath,
             };
+            List<string> _unitCodes = (from s in db.Unit
+                                       select s.UnitCode).ToList();
+            ViewBag.SelectedUnitCode = result.UnitCode;
+            _unitCodes.Remove(result.UnitCode);
+            ViewBag.UnitCodes = _unitCodes;
+
+            ViewBag.SelectedStudent = result.StudentId.ToString();
+            List<string> _studentIds = studentIds;
+            _studentIds.Remove(result.StudentId.ToString());
+            ViewBag.StudentIds = _studentIds;
             return View(viewModel);
         }
 

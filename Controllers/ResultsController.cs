@@ -36,11 +36,11 @@ namespace ResultManagement.Controllers
                           select s).Include(s=>s.Unit);
 
             List<string> semesters = new List<string>(){
-            "None","1","2"
+            "All","1","2"
         };
 
             List<string> unitCodes = new List<string>(){
-            "None"
+            "All"
         };
 
             List<string> _unitCodes = (from s in db.Unit
@@ -59,11 +59,11 @@ namespace ResultManagement.Controllers
                                          || s.Year.ToString().ToLower().Contains(searchString.ToLower())
                                        );
             }
-            if (!(semesterSearch == "None" || string.IsNullOrEmpty(semesterSearch)))
+            if (!(semesterSearch == "All" || string.IsNullOrEmpty(semesterSearch)))
             {
                 result = result.Where(s => s.Semester.ToString() == semesterSearch);
             }
-            if (!(unitCodeSearch == "None" || (string.IsNullOrEmpty(unitCodeSearch))))
+            if (!(unitCodeSearch == "All" || (string.IsNullOrEmpty(unitCodeSearch))))
             {
                 result = result.Where(s => s.UnitCode.ToString() == unitCodeSearch);
             }

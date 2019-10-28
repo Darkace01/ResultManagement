@@ -178,9 +178,9 @@
     </Compile>
     <Compile Include="Helpers\DummyStudents.cs" />
     <Compile Include="Helpers\Enums.cs" />
-    <Compile Include="Migrations\201910251009556_init.cs" />
-    <Compile Include="Migrations\201910251009556_init.Designer.cs">
-      <DependentUpon>201910251009556_init.cs</DependentUpon>
+    <Compile Include="Migrations\201910251449180_inital-migration.cs" />
+    <Compile Include="Migrations\201910251449180_inital-migration.Designer.cs">
+      <DependentUpon>201910251449180_inital-migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -285,8 +285,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201910251009556_init.resx">
-      <DependentUpon>201910251009556_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201910251449180_inital-migration.resx">
+      <DependentUpon>201910251449180_inital-migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -141,11 +141,11 @@ namespace ResultManagement.Controllers
                     {
                         string fileName = Path.GetFileNameWithoutExtension(result.ImgFile.FileName);
                         string extension = Path.GetExtension(result.ImgFile.FileName);
-                        //if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
-                        //{
-                        //    ViewBag.ImgError = "File is not an image";
-                        //    return View(result);
-                        //}
+                        if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".gif"))
+                        {
+                            ViewBag.ImgError = "File is not an image";
+                            return View(result);
+                        }
                         fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
                         result.ImgPath = "~/Content/IMAGES/" + fileName;
                         fileName = Path.Combine(Server.MapPath("~/Content/IMAGES/"), fileName);
@@ -223,11 +223,11 @@ namespace ResultManagement.Controllers
                     {
                         string fileName = Path.GetFileNameWithoutExtension(resultModel.ImgFile.FileName);
                         string extension = Path.GetExtension(resultModel.ImgFile.FileName);
-                        //if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg"))
-                        //{
-                        //    ViewBag.ImgError = "File is not an image";
-                        //    return View(resultModel);
-                        //}
+                        if (!(extension.ToLower() == ".jpg" || extension.ToLower() == ".png" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".gif"))
+                        {
+                            ViewBag.ImgError = "File is not an image";
+                            return View(resultModel);
+                        }
                         fileName = fileName + DateTime.Now.ToString("yyyymmddhhmmssfff") + extension;
                         resultModel.ImgPath = "~/Content/IMAGEs/" + fileName;
                         fileName = Path.Combine(Server.MapPath("~/Content/IMAGEs/"), fileName);

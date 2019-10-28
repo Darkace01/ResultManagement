@@ -91,13 +91,15 @@
         </div>
     </div>
     <div class="form-group">
-        <img class="img-responsive" id="targetImg" style="height:250px;width:250px;margin-bottom:10px" src="@Url.Content(Model.ImgPath)" />
+        @Html.Label("Image Preview", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10"><img class="img-responsive" id="targetImg" style="height:250px;width:250px;margin-bottom:10px" src="@Url.Content(Model.ImgPath)" /></div>
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.ImgFile, htmlAttributes: new { @class = "control-label col-md-2" }) (Max: 4mb)
         <div class="col-md-10">
             <p id="ImgError" class="" style="color:red;">@ViewBag.ImgError</p>
             <p id="imgFileSizeError" style="color:red;"></p>
+            <p id="imgFileFormatError" style="color:red;"></p>
             <input type="file" id="imgFile" name="ImgFile" accept="image/*" value="Choose Image" />
             @*@Html.ValidationMessageFor(model => model.PdfFile, "", new { @class = "text-danger" })*@
         </div>
@@ -116,7 +118,7 @@
 <script>
 
     var imgFileSizeError = document.getElementById("imgFileSizeError");
-    var imgFile = document.getElementById("ImgFile");
+    var imgFile = document.getElementById("imgFile");
     var submitButton = document.getElementById("submitButton");
     var ImgError = document.getElementById("ImgError");
 
@@ -153,8 +155,14 @@
 
 
 
-
     submitButton.addEventListener("click", function () {
+
+        var exten = imgFile.value.split('.').pop();
+        exten = exten.toLowerCase();
+        if (!(exten == "png" || exten == "jpg" || exten == "jpeg" || exten == "gif")) {
+            imgFileFormatError.textContent = "Incorrect format";
+            event.returnValue = false;
+        }
 
         if (imgFile.files[0].size > (4 * 1000 * 1024)) {
             //pdfFileSizeError.textContent = "File too large";
@@ -165,7 +173,7 @@
 
 
     $(document).ready(function () {
-        $('#pdfFile').bind('change', function () {
+        $('#imgFile').bind('change', function () {
             ImgError.textContent = "";
             // check if the file is larger than 4mb
             if (this.files[0].size > (4 * 1000 * 1024)) {
@@ -174,6 +182,14 @@
             else {
                 // passed.
                 imgFileSizeError.textContent = "";
+            }
+            var exten = imgFile.value.split('.').pop();
+            exten = exten.toLowerCase();
+            if (!(exten == "png" || exten == "jpg" || exten == "jpeg" || exten == "gif")) {
+                imgFileFormatError.textContent = "Incorrect format";
+
+            } else {
+                imgFileFormatError.textContent = "";
             }
         });
     })
